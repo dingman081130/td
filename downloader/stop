@@ -1,0 +1,2 @@
+#!/bin/bash
+kill $(ps aux | grep "[s]tart" | awk '{print $2}')

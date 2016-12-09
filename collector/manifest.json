@@ -1,0 +1,17 @@
+{
+  "name": "downloader",
+  "description": "Shows some of the features of the Context Menus API using an event page",
+  "version": "1.0",
+  "permissions": ["contextMenus"],
+  "background": {
+    "persistent": false,
+    "scripts": ["context_menus.js"]
+  },
+  "content_scripts": [
+    {
+        "matches": ["https://www.tumblr.com/dashboard"],
+        "js": ["content_script.js"]
+    }
+  ],
+  "manifest_version": 2
+}
