@@ -16,6 +16,12 @@ function onClickHandler(info, tab) {
   if (info.menuItemId == "contextvideo") {
     download(info.srcUrl, "mp4");
   }
+  if (info.menuItemId == "contextframe") {
+    console.log(info.frameUrl);
+    // window.open(info.frameUrl, '_blank');
+    // chrome.tabs.remove(tab.id, function() { });
+    chrome.tabs.update(tab.id, {url: info.frameUrl});
+  }
 
 };
 
@@ -25,10 +31,14 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 chrome.runtime.onInstalled.addListener(function() {
   // Create one test item for each context type.
   //var contexts = ["image","video","audio", "frame"];
-  var contexts = ["image","video","audio"];
+  var contexts = ["image","video","audio","frame"];
   for (var i = 0; i < contexts.length; i++) {
     var context = contexts[i];
     var title = "download " + context;
+    if (context == "frame") {
+        title = "extract video";
+    }
+    
     var id = chrome.contextMenus.create({"title": title, "contexts":[context], "id": "context" + context});
   }
 

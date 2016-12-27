@@ -5,8 +5,6 @@ function one_round {
 
     while read -r line;
         do
-			#line='https://www.tumblr.com/video_file/t:rTjvteFUun5KSZwJIKru2w/153995234979/tumblr_oh5d40UJy71ura7m2 mp4'
-            #echo $line
             IFS=' ' read -r -a array <<< "$line"
             url="${array[0]}"
             postfix="${array[1]}"
@@ -16,9 +14,6 @@ function one_round {
                 echo "[exist]$filename."
                 continue;
             fi
-            #echo $url
-            #echo $postfix
-            #echo $filename
 			echo "proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &"
             proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &
             echo '****** '$?
