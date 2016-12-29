@@ -8,7 +8,14 @@ function one_round {
             IFS=' ' read -r -a array <<< "$line"
             url="${array[0]}"
             postfix="${array[1]}"
+
+            ext="${url##*.}"
+            if [[ "$ext" =~ ^(png|jpg|gif|jpeg)$ ]];then
+                postfix=$ext
+            fi
+
             filename=~/Downloads/`echo -n "$url" | openssl sha1`.sha1.$postfix
+
             if [ -f "$filename" ]
             then
                 echo "[exist]$filename."
