@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+for f in *\ *;do
+	mv "$f" "${f// /_}"
+done
+
+for old_path in $(find . -iname '*.jpg' -o -iname '*.png' -o -iname '*.mp4' -o -iname '*.gif' -o -iname '*.mp3');do
+
+	base_name=$(basename "$old_path")
+	file_length=`echo "$base_name" | wc -c`
+	extension="${base_name##*.}"
+
+	if [ $file_length -eq 48 ];then
+        #echo 'path='$old_path  'name='$base_name 'ext='$extension 'flen='$file_length
+	    continue;
+	fi
+	new_path=`date +%Y-%m-%d`-`md5 -q "$old_path"`.$extension
+	mv "$old_path" "$new_path"
+	echo "$old_path -> $new_path" >> ./log
+	echo "$old_path -> $new_path" 
+
+done
