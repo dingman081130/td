@@ -5,7 +5,7 @@ for f in *\ *;do
 	mv "$f" "${f// /_}"
 done
 
-for old_path in $(find . -iname '*.jpg' -o -iname '*.png' -o -iname '*.mp4' -o -iname '*.gif' -o -iname '*.mp3');do
+for old_path in $(find . -iname '*.jpg' -o -iname '*.png' -o -iname '*.mp4' -o -iname '*.gif' -o -iname '*.mp3'i -o -iname '*.jpeg');do
 
 	base_name=$(basename "$old_path")
 	file_length=`echo "$base_name" | wc -c`
