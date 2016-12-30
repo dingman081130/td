@@ -13,7 +13,6 @@ function one_round {
             if [[ "$ext" =~ ^(png|jpg|gif|jpeg)$ ]];then
                 postfix=$ext
             fi
-
             filename=~/Downloads/`echo -n "$url" | openssl sha1`.sha1.$postfix
 
             if [ -f "$filename" ]
@@ -21,10 +20,14 @@ function one_round {
                 echo "[exist]$filename."
                 continue;
             fi
-			echo "proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &"
+            
+            while [ `ps aux | grep wget | wc -l` -gt 8 ];do
+                sleep 5
+            done
+			# echo "proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &"
             proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &
-            echo '****** '$?
-            echo '--------------------------'
+            # echo '****** '$?
+            # echo '--------------------------'
             
         done < $1
     rm -f $1
@@ -35,7 +38,7 @@ one_round $datafile
 function run {
     while :
         do
-            sleep 1
+            sleep 5
             if [ ! -f $datafile ]; then
                 # echo "no source to download"
                 continue;

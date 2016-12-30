@@ -11,11 +11,10 @@ function download {
 }
 
 function processPage {
-    # addr='http://sexynaughtyhotgirl.tumblr.com/likes/page/';
+    addr=http://$1.tumblr.com/likes/page/
     addr='http://clipxxxth.tumblr.com/likes/page/';
-    max_page=1;
-	pagepath=./page.html
-
+    max_page=100;
+	
     for ((i=1;i<=$max_page;i++)); 
     do
         echo "[info] Start to process page $i"
@@ -44,6 +43,7 @@ function processPage {
             processImage $image
         done
     	echo "[info] Process page $i done. $pageurl"
+        rm $path
     done
 }
 
@@ -95,8 +95,8 @@ function processVideoIframe {
 # debug processVodeoIframe function
 # processVideoIframe 'https://www.tumblr.com/video/harddieyou/153559736848/700/'
 
-#while true
-#do
-#    sleep 1
+while true
+do
     processPage
-#done
+    sleep 15
+done
