@@ -21,7 +21,7 @@ function one_round {
                 continue;
             fi
             
-            while [ `ps aux | grep wget | wc -l` -gt 8 ];do
+            while [ `ps aux | grep wget | wc -l` -gt 6 ];do
                 sleep 5
             done
 			# echo "proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $filename $url &"

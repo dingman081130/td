@@ -12,8 +12,7 @@ function download {
 
 function processPage {
     addr=http://$1.tumblr.com/likes/page/
-    addr='http://clipxxxth.tumblr.com/likes/page/';
-    max_page=100;
+    max_page=5;
 	
     for ((i=1;i<=$max_page;i++)); 
     do
@@ -97,6 +96,6 @@ function processVideoIframe {
 
 while true
 do
-    processPage
-    sleep 15
+    processPage $1
+    sleep 30
 done
