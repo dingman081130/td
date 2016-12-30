@@ -1,68 +1,99 @@
 #!/bin/bash
 
+# input $1 as url and return filepath, -1 when fail
+
+function download {
+    url=$1
+    path=$2
+    proxychains4 wget --no-check-certificate --tries=3 -q -T 3 -O $path $url
+    return $?
+
+}
+
 function processPage {
-    addr='http://sexynaughtyhotgirl.tumblr.com/likes/page/';
-    max_page=100;
+    # addr='http://sexynaughtyhotgirl.tumblr.com/likes/page/';
+    addr='http://clipxxxth.tumblr.com/likes/page/';
+    max_page=1;
 	pagepath=./page.html
 
-    for ((i=1;i<=100;i++)); 
+    for ((i=1;i<=$max_page;i++)); 
     do
         echo "[info] Start to process page $i"
-        pageurl="$addr$i"
-    	proxychains4 wget --no-check-certificate --tries=3 -q -T 3 -O $pagepath $pageurl
-        if [ $? != 0 ];then
-            echo "[erro] The page $i download fail. $pageurl"
+        url=$addr$i
+        path=./page.html
+        download $url $path
+        if [ $? -ne 0 ];then
+            echo "[erro] The page $i download fail. $url"
             continue;
         fi
-	    grep -q '\<article\>' $pagepath
+	    grep -q '\<article\>' $path
     	if [ $? != 0 ];then
 	    	echo "[done] Page $i is the last one."
 		    break
     	fi
-        grep 'https://www.tumblr.com/video/[a-zA-Z0-9.-]*/[0-9]*/[0-9]*/' -o $pagepath | while read -r iframe ; do
-            processIframe $iframe
+        # extract all the video url
+        grep 'https://www.tumblr.com/video/[a-zA-Z0-9.-]*/[0-9]*/[0-9]*/' -o $path | while read -r video_iframe ; do
+            processVideoIframe $video_iframe
+        done
+        # extract all the photoset url
+        grep 'http://[a-zA-Z0-9.-]*/post/[0-9]*/photoset_iframe/[a-zA-Z0-9.-]*/tumblr_[a-zA-Z0-9.-]*/0/false' -o $path | while read -r photoset_iframe ; do
+            processPhotoSetIframe $photoset_iframe
+        done
+        # extract all the 
+        grep 'http://[a-zA-Z0-9.-]*/[a-zA-Z0-9]*/tumblr_[a-zA-Z0-9.-_]*' -o $path | while read -r image ; do
+            processImage $image
         done
     	echo "[info] Process page $i done. $pageurl"
     done
 }
 
-function processIframe {
-    iframeurl=$1
-    echo "[info] Start to process iframe $iframe"
-    iframepath=./iframe.html
-    proxychains4 wget --no-check-certificate --tries=3 -q -T 3 -O $iframepath $iframeurl &
-    if [ $? != 0 ];then
-        echo "[erro] The iframe $iframe download fail"
-        return 1
-    fi
-
-    grep -oh 'https://www.tumblr.com/video_file/[^\ \"]*' $iframepath | while read -r video ; do
-        processVideo $video
-    done
-
+function processImage {
+    url=$1
+    echo "[info] Start to process image $url"
+    echo $url >> ../q
     return 0;
 }
 
-function processVideo {
-    videourl=$1
-    echo "videourl" >> ./downloaded1234.txt
-    return 0
-    videopath=~/Downloads/`echo -n "$videourl" | openssl sha1`.sha1.mp4
-    if [ -f "$videopath" ];then
-        echo "[info] $videopath has been downloaded."
-        return 0
+function processPhotoSetIframe {
+    url=$1
+    path=./photoset_iframe.html
+    echo "[info] Start to process photoset iframe $url"
+    download $url $path
+    if [ $? -ne 0 ];then
+        echo "[erro] The photoset iframe $url download fail"
+        rm $path
+        return -1
     fi
-    #proxychains4 wget --no-check-certificate --tries=3 -c -T 3 -O $videopath $videourl
-    echo "ok"
-    if [ $? != 0 ];then
-        echo "[erro] Download video fail. $videourl"
-        return 1
-    else
-        echo "videourl" >> ./downloaded1234.txt
-    fi
-    return 0
     
+    grep -oh 'http://[a-zA-Z0-9.-]*/[a-zA-Z0-9]*/tumblr_[^\ \"]*' $path | while read -r image ; do
+        echo $image >> ../q
+    done
+    rm $path
+    return 0
+
 }
+
+function processVideoIframe {
+
+    url=$1
+    path=./video_iframe.html
+    echo "[info] Start to process video iframe $url"
+    download $url $path
+    if [ $? -ne 0 ];then
+        echo "[erro] The video iframe $url download fail"
+        rm $path
+        return -1
+    fi
+            
+    grep -oh 'https://www.tumblr.com/video_file/[^\ \"]*' $path | while read -r video ; do
+        echo $video" mp4" >> ../q
+    done
+    rm $path
+    return 0
+}
+
+# debug processVodeoIframe function
+# processVideoIframe 'https://www.tumblr.com/video/harddieyou/153559736848/700/'
 
 #while true
 #do
