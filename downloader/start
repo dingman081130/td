@@ -44,7 +44,7 @@ function run {
                 continue;
             fi
             one_round $1
-        done
+        done &
 }
 
 run $datafile

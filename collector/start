@@ -97,5 +97,5 @@ function processVideoIframe {
 while true
 do
     processPage $1
-    sleep 30
-done
+    sleep 10
+done &
