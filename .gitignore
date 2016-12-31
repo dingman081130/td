@@ -2,3 +2,4 @@ q
 wget-log*
 *.html
 *.txt
+nohup.out
