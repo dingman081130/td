@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /Users/dingfei/Documents/Code/td/collector
-nohup ./start sexynaughtyhotgirl&
-cd /Users/dingfei/Documents/Code/td/downloader 
-nohup ./start&
+cd ~/Documents/Code/td/collector
+nohup ./start $1 &
+cd ~/Documents/Code/td/downloader 
+nohup ./start &
